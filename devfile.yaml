@@ -12,5 +12,5 @@ components:
       cpuLimit: 2000m
       env:
       - name: VSCODE_DEFAULT_WORKSPACE
-        value: "/projects/$(PROJECT_SOURCE)/code-workspace"
+        value: "/projects/$(PROJECT_SOURCE)/workspace.code-workspace"
 
