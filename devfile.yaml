@@ -10,4 +10,7 @@ components:
       memoryLimit: 6G
       cpuRequest: 100m
       cpuLimit: 2000m
+      env:
+      - name: VSCODE_DEFAULT_WORKSPACE
+        value: "/projects/$(PROJECT_SOURCE)/code-workspace"
 
