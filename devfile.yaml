@@ -1,16 +1,58 @@
 schemaVersion: 2.2.0
 metadata:
   name: devspaces-backstage-plugin
+projects:
+- name: devspaces-backstage-plugin
+  git:
+    checkoutFrom:
+      remote: origin
+      revision: main
+    remotes:
+      origin: https://github.com/cgruver/devspaces-backstage-plugin.git
 components:
-  - name: dev-tools
-    container:
-      image: quay.io/cgruver0/che/quarkus-angular-node20-java21:latest
-      mountSources: true
-      memoryRequest: 500Mi
-      memoryLimit: 6G
-      cpuRequest: 100m
-      cpuLimit: 2000m
-      env:
-      - name: VSCODE_DEFAULT_WORKSPACE
-        value: "/projects/$(PROJECT_SOURCE)/workspace.code-workspace"
-
+- name: dev-tools
+  container:
+    image: quay.io/cgruver0/che/node20-dev-tools:latest
+    mountSources: true
+    memoryRequest: 500Mi
+    memoryLimit: 6G
+    cpuRequest: 100m
+    cpuLimit: 2000m
+    env:
+    - name: VSCODE_DEFAULT_WORKSPACE
+      value: /projects/devspaces-backstage-plugin/workspace.code-workspace
+    volumeMounts:
+    - name: npm
+      path: /home/user/.npm
+    endpoints:
+    - name: frontend
+      protocol: https
+      targetPort: 3000
+      exposure: public
+    - name: backend
+      protocol: https
+      targetPort: 7007
+      exposure: public
+- volume:
+    size: 2Gi
+  name: npm
+- name: oc-cli
+  container:
+    args:
+      - '-c'
+      - >-
+        mkdir -p /projects/bin && cp /usr/bin/oc /projects/bin/oc && cp /usr/bin/kubectl /projects/bin/kubectl
+    command:
+      - /bin/bash
+    image: image-registry.openshift-image-registry.svc:5000/openshift/cli:latest
+    sourceMapping: /projects
+    mountSources: true
+    memoryLimit: 256M
+commands:
+- apply:
+    component: oc-cli
+    label: Copy OpenShift CLI
+  id: cp-oc-cli
+events:
+  preStart:
+    - cp-oc-cli
