@@ -21,9 +21,8 @@ components:
     env:
     - name: VSCODE_DEFAULT_WORKSPACE
       value: /projects/devspaces-backstage-plugin/workspace.code-workspace
-    volumeMounts:
-    - name: npm
-      path: /home/user/.npm
+    - name: HOME
+      value: "/projects/home"
     endpoints:
     - name: frontend
       protocol: https
@@ -34,8 +33,8 @@ components:
       targetPort: 7007
       exposure: public
 - volume:
-    size: 2Gi
-  name: npm
+    size: 20Gi
+  name: projects
 - name: oc-cli
   container:
     args:
