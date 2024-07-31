@@ -47,11 +47,34 @@ components:
     sourceMapping: /projects
     mountSources: true
     memoryLimit: 256M
+- name: prep-workspace
+  container:
+    image: quay.io/cgruver0/che/node20-dev-tools:latest
+    mountSources: true
+    sourceMapping: /projects
+    memoryRequest: 128Mi
+    memoryLimit: 256Mi
+    cpuRequest: 10m
+    cpuLimit: 200m
+    env:
+    - name: HOME
+      value: "/projects/home"
+    args:
+      - '-c'
+      - >-
+        rm ${HOME}/.kube/config
+    command:
+      - /bin/bash
 commands:
 - apply:
     component: oc-cli
     label: Copy OpenShift CLI
   id: cp-oc-cli
+- apply:
+    component: prep-workspace
+    label: Prestart Workspace Prep
+  id: prep-workspace
 events:
   preStart:
     - cp-oc-cli
+    - prep-workspace
