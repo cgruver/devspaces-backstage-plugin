@@ -62,7 +62,7 @@ components:
     args:
       - '-c'
       - >-
-        rm ${HOME}/.kube/config
+        if [[ -f ${HOME}/.kube/config ]]; then rm ${HOME}/.kube/config; fi
     command:
       - /bin/bash
 commands:
